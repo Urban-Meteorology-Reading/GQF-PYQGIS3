@@ -14,3 +14,4 @@ path_GQF = Path('your_path_to/GQF')
 4. other GQF settings via two namelist files:
    1. `Parameters.nml`: under `GQF_Inputs_1`, details refer to [this page](https://umep-docs.readthedocs.io/en/latest/OtherManuals/GQF_Manual.html#id4).
    2. `DataSources.nml`: under `GQF_Inputs_1`, details refer to [this page](https://umep-docs.readthedocs.io/en/latest/OtherManuals/GQF_Manual.html#data-sources-file).
+5. execute `RunGQF.py`.
