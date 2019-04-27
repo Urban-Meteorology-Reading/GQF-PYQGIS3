@@ -1,8 +1,0 @@
-Requested Date (if applic):: Date returned (if applic) :: Param name :: Description
-======Disagg=======
-None :: None :: None :: Labelling features using ID for ./GQF_Inputs_1/Workday population/500m_Workday_from_100m.shp
-None :: None :: None :: No weighting attribute specified so disaggregated weighting by intersected feature area only
-None :: None :: None :: Labelling features using ID for ./GQF_Inputs_1/Workday population/500m_Workday_from_100m.shp
-None :: None :: None :: Labelling features using ID for ./GQF_Inputs_1/Workday population/500m_Workday_from_100m.shp
-None :: None :: None :: No weighting attribute specified so disaggregated weighting by intersected feature area only
-None :: None :: None :: Labelling features using ID for ./GQF_Inputs_1/Workday population/500m_Workday_from_100m.shp
