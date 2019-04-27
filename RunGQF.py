@@ -46,9 +46,9 @@ model.setConfig(config)
 
 model.setOutputDir(f'./SampleRun/{rand_file}/')
 
-# model.processInputData()
-# model.setPreProcessedInputFolder(f'./SampleRun/{rand_file}/DownscaledData/')
-model.setPreProcessedInputFolder(f'./SampleRun/2C3V2J/DownscaledData/')
+model.processInputData()
+model.setPreProcessedInputFolder(f'./SampleRun/{rand_file}/DownscaledData/')
+# model.setPreProcessedInputFolder(f'./SampleRun/2C3V2J/DownscaledData/')
 
 model.run()
 
