@@ -1,0 +1,8 @@
+&input_nml
+    all_qf = 1
+    end_dates = '2015-01-01'
+    latent_qf = 1
+    sensible_qf = 1
+    start_dates = '2015-01-01'
+    wastewater_qf = 0
+/
