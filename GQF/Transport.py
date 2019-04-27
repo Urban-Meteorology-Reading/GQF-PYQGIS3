@@ -1,8 +1,8 @@
 from datetime import datetime as dt
-from string_func import   lower
-from DataManagement.LookupLogger import LookupLogger
-from DataManagement.SpatialTemporalResampler import SpatialTemporalResampler
-from DataManagement.spatialHelpers import *
+from .string_func import   lower
+from .DataManagement.LookupLogger import LookupLogger
+from .DataManagement.SpatialTemporalResampler import SpatialTemporalResampler
+from .DataManagement.spatialHelpers import *
 from qgis.core import QgsSpatialIndex
 from shutil import rmtree
 

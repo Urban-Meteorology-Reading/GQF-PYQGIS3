@@ -1,13 +1,19 @@
 import sys
 from pathlib import Path
 # set path to run GQF
-path_GQF = Path('/Users/sunt05/Dropbox/6.Repos/GQF-PYQGIS3/GQF')
+path_GQF = Path('/Users/sunt05/Dropbox/6.Repos/GQF-PYQGIS3')
+# path_GQF_data = path_GQF/'DataManagement'
+# path_QGIS3 = Path('/Applications/QGIS3.6.app/Contents/MacOS/../Resources')
+# path_QGIS3_lib = (path_QGIS3/'python')
+# path_QGIS3_plugin = (path_QGIS3_lib/'plugins')
+# sys.path.append(path_QGIS3_lib.as_posix())
+# sys.path.append(path_QGIS3_plugin.as_posix())
+# sys.path.append(path_QGIS3/'python/plugins')
+# sys.path.append('/Applications/QGIS3.6.app/Contents/MacOS/lib/')
+sys.path.append(path_GQF.as_posix())
 
-#sys.path.append('/Applications/QGIS3.app/Contents/Resources/python/plugins')
-print(path_GQF.exists())
-print((path_GQF/'DataManagement').exists())
-sys.path.append(path_GQF)
-sys.path.append(path_GQF/'DataManagement')
+
+# print(sys.path)
 
 
 import os
@@ -15,8 +21,8 @@ os.chdir(path_GQF)
 print(os.getcwd())
 
 
-from Config import Config
-from GreaterQF import Model
+from GQF.Config import Config
+from GQF.GreaterQF import Model
 import random
 import string
 
@@ -39,7 +45,7 @@ b['wastewater_qf'] = 0
 b['start_dates'] = '2015-01-01'
 b['end_dates'] = '2015-01-02'
 config.loadFromDictionary(b)
-config.saveNamelist(f'./DataManagement/history-runs/{rand_file}.nml')
+config.saveNamelist(f'./SampleRun/history-runs/{rand_file}.nml')
 
 model = Model()
 

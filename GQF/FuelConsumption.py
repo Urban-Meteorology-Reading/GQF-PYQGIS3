@@ -3,7 +3,7 @@ try:
 except:
     pass
 import os
-from string_func import   lower
+from .string_func import   lower
 class FuelConsumption():
     def __init__(self, filename):
         ''' Class to read in fuel consumption file with prescribed format in g/km,

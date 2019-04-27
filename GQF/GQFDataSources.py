@@ -5,7 +5,7 @@ try:
     import numpy as np
 except:
     pass
-from string_func import upper, lower
+from .string_func import upper, lower
 
 # Validate "shapefile" as either numeric or a valid file location
 def validateInput(x):

@@ -9,8 +9,8 @@ try:
 except:
     pass
 import pytz
-from DataManagement.LookupLogger import LookupLogger
-from DataManagement.TemporalProfileSampler import TemporalProfileSampler
+from .DataManagement.LookupLogger import LookupLogger
+from .DataManagement.TemporalProfileSampler import TemporalProfileSampler
 
 class TransportProfiles:
     def __init__(self, city, use_uk_holidays, customHolidays = [], logger=LookupLogger()):

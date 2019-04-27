@@ -2,7 +2,7 @@
 from datetime import datetime as dt
 from datetime import timedelta as timedelta
 import f90nml as nml
-from string_func import lower
+from .string_func import lower
 import pytz
 
 class Params:

@@ -15,7 +15,7 @@ import processing  # qgis processing framework
 # from qgis.PyQt.QtCore import QVariant, QPyNullVariant
 from qgis.PyQt.QtCore import QVariant
 import tempfile
-# from string_func import   lower
+# from .string_func import   lower
 #
 # qgs = QgsApplication(sys.argv, False)
 # qgs.setPrefixPath(r"C:\Program Files (x86)\QGIS 2.18\apps\qgis-ltr", True)

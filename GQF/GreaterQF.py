@@ -10,24 +10,24 @@ try:
 except:
     pass
 
-from DataManagement.spatialHelpers import feature_areas, loadShapeFile, shapefile_attributes
-from DataManagement.temporalHelpers import makeUTC
+from .DataManagement.spatialHelpers import feature_areas, loadShapeFile, shapefile_attributes
+from .DataManagement.temporalHelpers import makeUTC
 from pytz import timezone
-from Calcs3 import QF
-from DailyEnergyLoading import DailyEnergyLoading
-from DailyFactors import DailyFact
-from Disaggregate import disaggregate
-from EnergyProfiles import EnergyProfiles  # For temporal energy use profiles
+from .Calcs3 import QF
+from .DailyEnergyLoading import DailyEnergyLoading
+from .DailyFactors import DailyFact
+from .Disaggregate import disaggregate
+from .EnergyProfiles import EnergyProfiles  # For temporal energy use profiles
 # For spatially disaggregated energy use data
-from EnergyUseData import EnergyUseData
-from FuelConsumption import FuelConsumption
-from GQFDataSources import DataSources
-from HumanActivityProfiles import HumanActivityProfiles
-from Params import Params
-from Partitions import Partitions
-from Population import Population
-from Transport import Transport
-from TransportProfiles import TransportProfiles
+from .EnergyUseData import EnergyUseData
+from .FuelConsumption import FuelConsumption
+from .GQFDataSources import DataSources
+from .HumanActivityProfiles import HumanActivityProfiles
+from .Params import Params
+from .Partitions import Partitions
+from .Population import Population
+from .Transport import Transport
+from .TransportProfiles import TransportProfiles
 from multiprocessing import Pool
 pool=Pool()
 
@@ -309,14 +309,16 @@ class Model():
             # Write out the full time step to a file
             WH.to_csv(os.path.join(self.modelOutputPath, tb.strftime(
                 self.dateStructure)), index_label='featureId')
-        list_input_QF = [
-            (areas.index.tolist(), tb.to_pydatetime(), 1800, bldgEnergy, diurnalE,
-             dailyE, pop, trans, diurnalT, hap, df,  props, self.parameters.heatOfCombustion)
-            for tb in timeBins]
-        list_path_save = [
-            os.path.join(self.modelOutputPath, tb.strftime(self.dateStructure))
-            for tb in timeBins]
-        list_WH = pool.starmap(QF_save, zip(list_input_QF, list_path_save))
+
+        # multiprocessing won't work due to inability to pickle objects
+        # list_input_QF = [
+        #     (areas.index.tolist(), tb.to_pydatetime(), 1800, bldgEnergy, diurnalE,
+        #      dailyE, pop, trans, diurnalT, hap, df,  props, self.parameters.heatOfCombustion)
+        #     for tb in timeBins]
+        # list_path_save = [
+        #     os.path.join(self.modelOutputPath, tb.strftime(self.dateStructure))
+        #     for tb in timeBins]
+        # list_WH = pool.starmap(QF_save, zip(list_input_QF, list_path_save))
 
 
 

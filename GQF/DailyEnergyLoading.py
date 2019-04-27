@@ -1,15 +1,15 @@
 # Object that stores and retrieves coefficients that describe the total energy used (gas or electricity) each day
 # This allows GreaterQF to disaggregate the annual total to a particular day
 import os
-from string_func import   lower
+from .string_func import   lower
 try:
     import pandas as pd
 except:
     pass
 
 import pytz
-from DataManagement.DailyLoading import DailyLoading
-from DataManagement.LookupLogger import LookupLogger
+from .DataManagement.DailyLoading import DailyLoading
+from .DataManagement.LookupLogger import LookupLogger
 
 
 class DailyEnergyLoading:

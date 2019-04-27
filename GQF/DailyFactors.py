@@ -1,6 +1,6 @@
 # Stores and retrieves daily factors for buildings
 from datetime import datetime as dt
-from DataManagement.temporalHelpers import holidaysForYear
+from .DataManagement.temporalHelpers import holidaysForYear
 
 class DailyFact:
     def __init__(self, use_uk_holidays, custom_holidays=[]):

@@ -1,15 +1,15 @@
 # Object that stores and retrieves diurnal cycles of metabolic activity profiles for different seasons and times of day for GreaterQF
 
 import os
-from string_func import   lower
+from .string_func import   lower
 try:
     import numpy as np
     import pandas as pd
 except:
     pass
 import pytz
-from DataManagement.LookupLogger import LookupLogger
-from DataManagement.TemporalProfileSampler import TemporalProfileSampler
+from .DataManagement.LookupLogger import LookupLogger
+from .DataManagement.TemporalProfileSampler import TemporalProfileSampler
 
 
 class HumanActivityProfiles:
