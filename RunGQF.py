@@ -1,13 +1,18 @@
 import sys
 from pathlib import Path
 # set path to run GQF
-path_GQF = Path('/Users/sunt05/Dropbox/6.Repos/GQF')
+path_GQF = Path('/Users/sunt05/Dropbox/6.Repos/GQF-PYQGIS3/GQF')
+
 #sys.path.append('/Applications/QGIS3.app/Contents/Resources/python/plugins')
+print(path_GQF.exists())
+print((path_GQF/'DataManagement').exists())
 sys.path.append(path_GQF)
 sys.path.append(path_GQF/'DataManagement')
 
+
 import os
 os.chdir(path_GQF)
+print(os.getcwd())
 
 
 from Config import Config
