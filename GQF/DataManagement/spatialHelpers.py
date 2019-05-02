@@ -772,9 +772,12 @@ def shapefile_attributes(layer):
             try:
                 vals.append(float(a))
             except Exception:
-                # QPyNullVariant is deprecated
-                # always cast to NaN
-                vals.append(np.nan)
+                try:
+                    vals.append(str(a))
+                except Exception:
+                    # QPyNullVariant is deprecated
+                    # always cast to NaN
+                    vals.append(np.nan)
                 # print('not a good value', type(a))
                 # if type(a) is QPyNullVariant:
                 # if a is None:
@@ -868,10 +871,10 @@ def loadShapeFile(filename, targetEPSG=None):
     layer = QgsVectorLayer(filename, 'Shapefile', 'ogr')
     # layer = QgsVectorLayer(path=filename, baseName='shpfile', providerLib='ogr')
 
-    print(layer)
-    print(layer.crs().authid())
+    # print(layer)
+    # print(layer.crs().authid())
     # print layer.dataProvider().crs().authid().split(':')[1]
-    print('data provider', layer.dataProvider())
+    # print('data provider', layer.dataProvider())
 
     # print layer.dataProvider().crs().authid().split(':')[1]
     if not layer:
