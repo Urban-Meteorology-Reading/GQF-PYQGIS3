@@ -155,7 +155,7 @@ class EnergyUseData:
         combined_refined.columns = typeLabels
         # Since energy data is all still kWh/year, convert it to W
         # print(combined_refined.dtype, type(combined_refined))
-        combined_refined = combined_refined * 1000 / (365.25 * 24)
+        combined_refined = combined_refined.astype('float') * 1000 / (365.25 * 24)
         # print('seems pass',1/0)
 
         # And normalise by area of each polygon to get W/m2

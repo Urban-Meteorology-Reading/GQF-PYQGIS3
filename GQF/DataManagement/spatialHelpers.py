@@ -7,7 +7,7 @@ try:
     import pandas as pd
 except:
     pass
-from qgis.core import QgsVectorFileWriter, QgsVectorLayer, QgsRasterLayer, QgsGeometry, QgsRaster, QgsRectangle, QgsPoint, QgsField, QgsFeature, QgsSpatialIndex, QgsMessageLog
+from qgis.core import QgsVectorFileWriter, QgsVectorLayer, QgsRasterLayer, QgsGeometry, QgsRaster, QgsRectangle, QgsPoint, QgsField, QgsFeature, QgsSpatialIndex, QgsMessageLog, NULL, QgsCoordinateReferenceSystem, QgsCoordinateTransform
 # from qgis.core import QgsMapLayerRegistry, QgsSymbol, QgsGraduatedSymbolRenderer, QgsRendererRange, QgsFeatureRequest, QgsExpression, QgsDistanceArea
 from qgis.core import QgsSymbol, QgsGraduatedSymbolRenderer, QgsRendererRange, QgsFeatureRequest, QgsExpression, QgsDistanceArea, QgsCoordinateTransformContext, QgsVectorLayerUtils
 from qgis.analysis import QgsZonalStatistics
@@ -772,12 +772,24 @@ def shapefile_attributes(layer):
             try:
                 vals.append(float(a))
             except Exception:
-                try:
-                    vals.append(str(a))
-                except Exception:
-                    # QPyNullVariant is deprecated
-                    # always cast to NaN
+                if str(a) is 'NULL':
                     vals.append(np.nan)
+                else:
+                    # vals.append(str(a))
+                    vals.append(a)
+
+
+                # try:
+                    # vals.append(str(a))
+                # except Exception:
+                #     QPyNullVariant is deprecated
+                    # always cast to NaN
+                    # vals.append(np.nan)
+                    # if a is NULL:
+                    #     print(a)
+                    #     vals.append(np.nan)
+                    # else:
+                    #     vals.append(a)
                 # print('not a good value', type(a))
                 # if type(a) is QPyNullVariant:
                 # if a is None:
@@ -1026,8 +1038,8 @@ def colourRanges(displayLayer, attribute, opacity, range_minima, range_maxima, c
     for i in range(0, len(range_minima)):
         symbol = QgsSymbol.defaultSymbol(displayLayer.geometryType())
         symbol.setColor(QColor(colours[i]))
-        symbol.setAlpha(opacity)
-        symbol.symbolLayer(0).setOutlineColor(transparent)
+        symbol.setOpacity(opacity)  # setAlpha is now setOpacity
+        # symbol.symbolLayer(0).setOutlineColor(transparent)
 
         valueRange = QgsRendererRange(range_minima[i], range_maxima[i], symbol,
                                       str(range_minima[i]) + ' - ' + str(range_maxima[i]))
@@ -1036,7 +1048,7 @@ def colourRanges(displayLayer, attribute, opacity, range_minima, range_maxima, c
     renderer = QgsGraduatedSymbolRenderer('', rangeList)
     renderer.setMode(QgsGraduatedSymbolRenderer.EqualInterval)
     renderer.setClassAttribute(attribute)
-    displayLayer.setRendererV2(renderer)
+    displayLayer.setRenderer(renderer)  # setRendererV2 before
 
 
 def populateShapefileFromTemplate(dataMatrix, primaryKey, templateShapeFile,

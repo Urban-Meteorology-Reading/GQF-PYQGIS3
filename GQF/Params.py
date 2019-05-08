@@ -1,7 +1,8 @@
 # Object that loads and stores GreaterQF parameters, given a namelist file
 from datetime import datetime as dt
 from datetime import timedelta as timedelta
-import f90nml as nml
+# import f90nml as nml
+from ...Utilities import f90nml as nml
 from .string_func import lower
 import pytz
 
