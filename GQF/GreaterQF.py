@@ -28,8 +28,8 @@ from .Partitions import Partitions
 from .Population import Population
 from .Transport import Transport
 from .TransportProfiles import TransportProfiles
-from multiprocessing import Pool
-pool=Pool()
+# from multiprocessing import Pool
+# pool=Pool()
 
 
 def QF_save(input_QF, path_save):
@@ -92,7 +92,7 @@ class Model():
         '''
         if self.ds is None:
             raise Exception(
-                'Data sources file must be set  before processing input data')
+                'Data sources file must be set before processing input data')
 
         if self.parameters is None:
             raise Exception(
@@ -384,102 +384,103 @@ class Model():
                 'paramsFile': os.path.join(self.configPath,  'Parameters.nml'),
                 'dsFile': os.path.join(self.configPath, 'DataSources.nml')}
 
-    # def fetchResultsForLocation(self, id, startTime, endTime):
-    #     '''
-    #     Gets time series for feature ID between startTime and endTime for Total, Building, Metabolic and Transport QF
-    #     :param id:
-    #     :return:
-    #     '''
-    #     if id not in self.outputAreas:
-    #         raise Exception('Requested ID ' + id + ' not among available output areas')
-    #
-    #     if (type(startTime) is not dt) or (type(endTime) is not dt):
-    #         raise ValueError('Requested start and end times must be of type datetime')
-    #
-    #     # All model outputs are UTC
-    #     tz = timezone('UTC')
-    #     start = tz.localize(startTime)
-    #     end = tz.localize(endTime)
-    #
-    #     # See if there are any files to return
-    #     relevant = self.fileList[(self.fileList.index >= start) & (self.fileList.index <= end)]
-    #     if len(relevant) == 0:
-    #         raise ValueError('Requested start and end times must be of type datetime')
-    #
-    #     indices =  self.fileList.index[(self.fileList.index >= start) & (self.fileList.index <= end)]
-    #     # Go through the files and build up time series of Total, building, transport and
-    #     combined = pd.DataFrame(index=indices, columns=['AllTot', 'BldTot', 'TransTot', 'Metab', 'ElDmUnr', 'ElDmE7', 'ElId', 'GasDm', 'GasId', 'OthrId', 'Mcyc', 'Taxi', 'Car', 'Bus', 'LGV', 'Rigd', 'Art'])
-    #     for i in indices:
-    #         outs = pd.read_csv(self.fileList[i], header=0, index_col=0)
-    #         combined['AllTot'].loc[i] = outs['AllTot'].loc[id]
-    #         combined['BldTot'].loc[i] = outs['BldTot'].loc[id]
-    #         combined['TransTot'].loc[i] = outs['TransTot'].loc[id]
-    #         combined['Metab'].loc[i] = outs['Metab'].loc[id]
-    #         combined['ElDmUnr'].loc[i] = outs['ElDmUnr'].loc[id]
-    #         combined['ElDmE7'].loc[i] = outs['ElDmE7'].loc[id]
-    #         combined['ElId'].loc[i] = outs['ElId'].loc[id]
-    #         combined['GasDm'].loc[i] = outs['GasDm'].loc[id]
-    #         combined['GasId'].loc[i] = outs['GasId'].loc[id]
-    #         combined['OthrId'].loc[i] = outs['OthrId'].loc[id]
-    #         combined['Mcyc'].loc[i] = outs['Mcyc'].loc[id]
-    #         combined['Taxi'].loc[i] = outs['Taxi'].loc[id]
-    #         combined['Car'].loc[i] = outs['Car'].loc[id]
-    #         combined['Bus'].loc[i] = outs['Bus'].loc[id]
-    #         combined['LGV'].loc[i] = outs['LGV'].loc[id]
-    #         combined['Rigd'].loc[i] = outs['Rigd'].loc[id]
-    #         combined['Art'].loc[i] = outs['Art'].loc[id]
-    #
-    #     return combined
-    #
-    # def getOutputLayerInfo(self):
-    #     '''
-    #     Return the location and metadata of the output layer
-    #     :return:
-    #     '''
-    #     # Just use one of the disaggregated layers, since these are using same feature mappings
-    #     return self.processedDataList['domGas'][0]
-    #
-    # def getOutputAreaIDs(self):
-    #     '''
-    #     Return list of output areas
-    #     :return: List of IDs
-    #     '''
-    #     return self.outputAreas
-    #
-    # def getTimeSteps(self):
-    #     '''
-    #     Return list of time steps
-    #     :return:
-    #     '''
-    #     return list(self.fileList.index)
-    #
-    # def getFileList(self):
-    #     '''
-    #     Returns pandas time series of model output files
-    #     :return:
-    #     '''
-    #     return self.fileList
-    #
-    # def getOutputAreas(self):
-    #     ''' Return output areas in square metres, and their IDs (pandas series)'''
-    #     a = loadShapeFile(self.ds.outputAreas_spat['shapefile'])
-    #     s = pd.Series(feature_areas(a))
-    #     a = None
-    #     return s
-    #
-    # def getFeatureMapper(self):
-    #     ''' Return a pandas series that allows the preferred feature ID to be looked up from the numeric feature ID'''
-    #     a = loadShapeFile(self.ds.outputAreas_spat['shapefile'])
-    #     if self.ds.outputAreas_spat['featureIds'] is None:
-    #         featureMapper = pd.DataFrame(shapefile_attributes(a).index, index = shapefile_attributes(a).index)
-    #     else:
-    #         # Create mapping from real (numeric) feature ID to desired (string) feature ID
-    #         featureMapper = shapefile_attributes(a)[self.ds.outputAreas_spat['featureIds']]
-    #     a = None
-    #     return featureMapper
-    #
-    # def getReverseFeatureMapper(self):
-    #     ''' Return a pandas series that allows the numeric feature ID to be looked up from the perferred feature ID'''
-    #     a = self.getFeatureMapper()
-    #     b = pd.Series(data=a.index.astype('int'), index=a.values)
-    #     return b
+    ## Try to uncomment 20190507
+    def fetchResultsForLocation(self, id, startTime, endTime):
+        '''
+        Gets time series for feature ID between startTime and endTime for Total, Building, Metabolic and Transport QF
+        :param id:
+        :return:
+        '''
+        if id not in self.outputAreas:
+            raise Exception('Requested ID ' + id + ' not among available output areas')
+
+        if (type(startTime) is not dt) or (type(endTime) is not dt):
+            raise ValueError('Requested start and end times must be of type datetime')
+
+        # All model outputs are UTC
+        tz = timezone('UTC')
+        start = tz.localize(startTime)
+        end = tz.localize(endTime)
+
+        # See if there are any files to return
+        relevant = self.fileList[(self.fileList.index >= start) & (self.fileList.index <= end)]
+        if len(relevant) == 0:
+            raise ValueError('Requested start and end times must be of type datetime')
+
+        indices =  self.fileList.index[(self.fileList.index >= start) & (self.fileList.index <= end)]
+        # Go through the files and build up time series of Total, building, transport and
+        combined = pd.DataFrame(index=indices, columns=['AllTot', 'BldTot', 'TransTot', 'Metab', 'ElDmUnr', 'ElDmE7', 'ElId', 'GasDm', 'GasId', 'OthrId', 'Mcyc', 'Taxi', 'Car', 'Bus', 'LGV', 'Rigd', 'Art'])
+        for i in indices:
+            outs = pd.read_csv(self.fileList[i], header=0, index_col=0)
+            combined['AllTot'].loc[i] = outs['AllTot'].loc[id]
+            combined['BldTot'].loc[i] = outs['BldTot'].loc[id]
+            combined['TransTot'].loc[i] = outs['TransTot'].loc[id]
+            combined['Metab'].loc[i] = outs['Metab'].loc[id]
+            combined['ElDmUnr'].loc[i] = outs['ElDmUnr'].loc[id]
+            combined['ElDmE7'].loc[i] = outs['ElDmE7'].loc[id]
+            combined['ElId'].loc[i] = outs['ElId'].loc[id]
+            combined['GasDm'].loc[i] = outs['GasDm'].loc[id]
+            combined['GasId'].loc[i] = outs['GasId'].loc[id]
+            combined['OthrId'].loc[i] = outs['OthrId'].loc[id]
+            combined['Mcyc'].loc[i] = outs['Mcyc'].loc[id]
+            combined['Taxi'].loc[i] = outs['Taxi'].loc[id]
+            combined['Car'].loc[i] = outs['Car'].loc[id]
+            combined['Bus'].loc[i] = outs['Bus'].loc[id]
+            combined['LGV'].loc[i] = outs['LGV'].loc[id]
+            combined['Rigd'].loc[i] = outs['Rigd'].loc[id]
+            combined['Art'].loc[i] = outs['Art'].loc[id]
+
+        return combined
+
+    def getOutputLayerInfo(self):
+        '''
+        Return the location and metadata of the output layer
+        :return:
+        '''
+        # Just use one of the disaggregated layers, since these are using same feature mappings
+        return self.processedDataList['domGas'][0]
+
+    def getOutputAreaIDs(self):
+        '''
+        Return list of output areas
+        :return: List of IDs
+        '''
+        return self.outputAreas
+
+    def getTimeSteps(self):
+        '''
+        Return list of time steps
+        :return:
+        '''
+        return list(self.fileList.index)
+
+    def getFileList(self):
+        '''
+        Returns pandas time series of model output files
+        :return:
+        '''
+        return self.fileList
+
+    def getOutputAreas(self):
+        ''' Return output areas in square metres, and their IDs (pandas series)'''
+        a = loadShapeFile(self.ds.outputAreas_spat['shapefile'])
+        s = pd.Series(feature_areas(a))
+        a = None
+        return s
+
+    def getFeatureMapper(self):
+        ''' Return a pandas series that allows the preferred feature ID to be looked up from the numeric feature ID'''
+        a = loadShapeFile(self.ds.outputAreas_spat['shapefile'])
+        if self.ds.outputAreas_spat['featureIds'] is None:
+            featureMapper = pd.DataFrame(shapefile_attributes(a).index, index = shapefile_attributes(a).index)
+        else:
+            # Create mapping from real (numeric) feature ID to desired (string) feature ID
+            featureMapper = shapefile_attributes(a)[self.ds.outputAreas_spat['featureIds']]
+        a = None
+        return featureMapper
+
+    def getReverseFeatureMapper(self):
+        ''' Return a pandas series that allows the numeric feature ID to be looked up from the perferred feature ID'''
+        a = self.getFeatureMapper()
+        b = pd.Series(data=a.index.astype('int'), index=a.values)
+        return b

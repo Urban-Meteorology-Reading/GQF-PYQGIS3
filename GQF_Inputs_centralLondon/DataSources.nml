@@ -1,0 +1,160 @@
+! ### Model output polygons
+&outputAreas
+    shapefile = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\Workday population\500m_Workday_from_100m_central.shp'
+    epsgCode = 32631
+    featureIds = 'ID' ! The attribute to use as a unique ID for each area (optional; for cross-referencing)
+/
+
+! ### Population data
+&residentialPop
+    shapefiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\Residential population\500m_Residential_from_100m_central.shp'
+    startDates = '2014-01-01'
+    epsgCodes = 32631
+    attribToUse = 'Pop'
+	featureIds = 'ID'
+/
+&workplacePop
+    shapefiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\Workday population\500m_Workday_from_100m_central.shp'
+    startDates = '2014-01-01'
+    epsgCodes = 32631
+    attribToUse = 'Pop'
+	featureIds = 'ID'
+/
+
+! ### Energy consumption data
+&annualIndGas
+    ! Spatial variations of industrial gas use
+    shapefiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\Annual Energy Consumption\MSOA_elec_gas_2014\MSOA_elec_gas_2014_central.shp'
+    startDates = '2014-01-01'
+    epsgCodes = 32631
+    attribToUse = 'GasInd' ! Attribute(s) of this shapefile(s) that represents kWh/year industrial gas consumption
+	featureIds = 'MSOA11CD'
+
+/
+
+&annualIndElec
+    ! Spatial variations of industrial electricity use
+    shapefiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\Annual Energy Consumption\LA_Energy_2014\LA_energy_2014_central.shp'
+    startDates = '2014-01-01'
+    epsgCodes = 32631
+    attribToUse = 'ElInd_kWh'  ! Attribute(s) of this shapefile(s) that represents kWh/year industrial electric consumption
+	featureIds = 'GSS_CODE'
+	
+/
+&annualDomGas
+    ! Spatial variations of domestic gas use
+    shapefiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\Annual Energy Consumption\LSOA_elec_gas_2014\LSOA_elec_gas_2014_central.shp'
+    startDates = '2014-01-01'
+    epsgCodes = 32631
+    attribToUse = 'GasDom'
+	featureIds = 'LSOA11CD'
+/
+
+&annualDomElec
+    ! Spatial variations of domestic electricity use
+    shapefiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\Annual Energy Consumption\LSOA_elec_gas_2014\LSOA_elec_gas_2014_central.shp',
+    startDates = '2014-01-01'
+    epsgCodes = 32631
+    attribToUse = 'TElDom'
+	featureIds = 'LSOA11CD'
+/
+
+&annualEco7
+    ! Spatial variations of economy 7 electricity use
+    shapefiles = 0.0 ! Shares out 0.0 kWh/yr amongst all areas
+    startDates = '2014-01-01'
+    epsgCodes = 1
+    attribToUse = 'IndGas' ! attribute of this layer to extract (leave empty if using a single value rather than a shapefile)
+	featureIds = ''	
+/
+&dailyEnergyUse
+    ! Daily variations in total power use
+    profileFiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\2015GasElecDD.csv'
+/
+&diurnalDomElec
+    ! Diurnal variations in total domestic electricity use (metadata provided in file; files can contain multiple seasons)
+    profileFiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\BuildingLoadings_DomUnre.csv'
+/
+&diurnalDomGas
+    ! Diurnal variations in total domestic gas use (metadata provided in file; files can contain multiple seasons)
+    profileFiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\BuildingLoadings_DomUnre.csv'
+/
+&diurnalIndElec
+    ! Diurnal variations in total industrial electricity use (metadata provided in file; files can contain multiple seasons)
+    profileFiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\BuildingLoadings_Industrial.csv'
+/
+&diurnalIndGas
+    ! Diurnal variations in total industrial gas use (metadata provided in file; files can contain multiple seasons)
+    profileFiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\BuildingLoadings_Industrial.csv'
+/
+&diurnalEco7
+    ! Diurnal variations in total economy 7 electricity use (metadata provided in file; files can contain multiple seasons)
+    profileFiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\BuildingLoadings_EC7.csv'
+/
+
+! ### Transportation data
+&transportData
+    ! Vector data containing all road segments for study area
+    shapefiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\Transport\LAEI2013_AADTVKm_2013_link_central.shp'
+    startDates = '2008-01-01'
+    epsgCodes = 32631
+    featureIds = 'OBJECTID'	
+
+    ! What data is available for each road segment in this shapefile? 1 = Yes; 0 = No
+    speed_available = 1                 ! Speed data. If not available then default values from parameters file are used
+    total_AADT_available = 1            ! Total annual average daily total (AADT: total vehicles passing over each segment each day)
+    vehicle_AADT_available = 1          ! AADT available for specific vehicle types
+
+    ! Road classification information. This is used with assumed values for AADT
+    class_field = 'DESC_TERM'           ! The shapefile attribute that contains road classification
+    ! Strings that identify each class of road
+    motorway_class = 'Motorway'
+    primary_class = 'A Road'
+    secondary_class = 'B Road'
+    ! All other road types will be considered as "other"
+
+    ! Average speed for each road segment
+    speed_field = 'Speed_kph'           ! Field name
+    speed_multiplier = 1.0              ! Factor that converts data to km/h (1.0 if data is already in km/h)
+
+    ! Annual average daily total (mean number of vehicles per day) passing over each road segment in the shapefile
+    ! Specify attribute names if data is present in the shapefile.
+    AADT_total = 'AADTTOTAL'            ! Total AADT for all vehicles. Leave blank ('') if not available
+
+    ! AADT for cars of different fuels (leave as '' if not available)
+    AADT_diesel_car = 'AADTDcar'        ! Petrol cars
+    AADT_petrol_car = 'AADTPcar'        ! Diesel cars
+    ! Secondary option: Use total AADT for cars and break down using assumed fuel fractions from model parameters file
+    AADT_total_car = ''               ! Total AADT for all cars (required if the other car fields are ''; ignored if they are specified)
+
+    ! AADT for LGVs of different fuels leave as '' if not available)
+    AADT_diesel_LGV = 'AADTDLgv'        ! Petrol LGVs
+    AADT_petrol_LGV = 'AADTPLgv'        ! Diesel LGVs
+    ! Secondary option: Use total LGV AADT and assumed fuel fractions from parameters file
+    AADT_total_LGV = ''               ! Total AADT for all LGVs (required if the other LGV fields are ''; ignored if they are specified)
+
+    ! AADT for other vehicles. These are broken down into diesel/petrol based on fuel fractions (see model parameters file)
+    ! Specify shapefile attribute name or leave as '' if not available
+    AADT_motorcycle = 'AADTMotorc'      ! Motorcycles
+    AADT_taxi = 'AADTTaxi'              ! Taxis
+    AADT_bus = 'AADTLtBus'                  ! Buses
+    AADT_coach = 'AADTCoach'                ! Coaches
+    AADT_rigid = 'AADTRigid'                ! Rigid goods vehicles
+    AADT_artic = 'AADTArtic'                ! Articulated trucks
+/
+
+&fuelConsumption
+    ! File containing fuel consumption performance data for each vehicle type as standards change over the years
+    profileFiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\fuelConsumption.csv'
+/
+
+! Temporal transport data
+&diurnalTraffic
+    ! Diurnal cycles of transport flow for different vehicle types
+    profileFiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\Transport.csv'
+/
+
+! Temporal metabolism data
+&diurnalMetabolism
+    profileFiles = 'C:\Users\xlinfr\Documents\UMEP\GQfData\GQF_Inputs_centralLondon\Metabolism.csv'
+/
