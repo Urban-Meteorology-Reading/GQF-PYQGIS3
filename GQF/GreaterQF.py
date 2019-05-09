@@ -69,7 +69,7 @@ class Model():
         # Output file information
         # Filename format information so data can be retrieved
         # Regex
-        self.reg = 'GQF[0-9]{4}[0-9]{2}[0-9]{2}_[0-9]{2}-[0-9]{2}\.csv'
+        self.reg = r'GQF[0-9]{4}[0-9]{2}[0-9]{2}_[0-9]{2}-[0-9]{2}\.csv'
         # Time format to use when saving output files
         self.dateStructure = 'GQF%Y%m%d_%H-%M.csv'
         # List of model output files indexed by time
@@ -234,10 +234,10 @@ class Model():
         #         timeBins = timeBins.append(bins)
 
         timeBins = pd.date_range(
-            pd.datetime.strptime(
-                startDates.strftime('%Y-%m-%d %H:%M'), '%Y-%m-%d %H:%M') + timedelta(seconds=1800),
-            pd.datetime.strptime(
-                endDates.strftime('%Y-%m-%d %H:%M'), '%Y-%m-%d %H:%M'),
+            pd.to_datetime(startDates) + timedelta(seconds=1800),
+            # pd.datetime.strptime(startDates, '%Y-%m-%d %H:%M') + timedelta(seconds=1800),
+            pd.to_datetime(endDates) + timedelta(seconds=1800),
+            # pd.datetime.strptime(endDates, '%Y-%m-%d %H:%M'),
             tz='UTC',
             freq='30Min')
 
