@@ -23,7 +23,7 @@ def setOutputShapefile(self, shapefile, epsgCode, id_field):
     if type(shapefile) is QgsVectorLayer:
         self.outputLayer = shapefile
 
-    print('output layer', self.outputLayer)
+    # print('output layer', self.outputLayer)
     # Ensure the ID field exists
     fields = get_field_names(self.outputLayer)
     if id_field not in fields:
