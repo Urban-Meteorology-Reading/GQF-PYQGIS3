@@ -1,6 +1,6 @@
 from .spatialHelpers import *
 from qgis.core import QgsField, QgsVectorLayer, QgsSpatialIndex, QgsMessageLog, QgsCoordinateReferenceSystem, QgsCoordinateTransform
-import processing
+# import processing
 
 from qgis.PyQt.QtCore import QVariant, QSettings
 try:
@@ -58,7 +58,7 @@ class SpatialTemporalResampler:
         if type(shapefile) is QgsVectorLayer:
             self.outputLayer = shapefile
 
-        print('output layer', self.outputLayer)
+        # print('output layer', self.outputLayer)
         # Ensure the ID field exists
         fields = get_field_names(self.outputLayer)
         if id_field not in fields:
@@ -319,7 +319,7 @@ class SpatialTemporalResampler:
         # Determine which input features intersect the bounding box of the output feature,
         # then do a real intersection.
         for feat in inputLayer.getFeatures():
-            inputIndex.insertFeature(feat)
+            inputIndex.addFeature(feat)
 
         # If the inputLayer and outputLayer spatial units are the same, then disaggregation does not need to happen.
         if sameFeatures(inputLayer, self.outputLayer):
