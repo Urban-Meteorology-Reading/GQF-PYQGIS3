@@ -1,7 +1,8 @@
 from datetime import date as dtd
 import datetime as dt
 # import f90nml as nml
-from ...Utilities import f90nml as nml
+# import f90nml as nml
+import f90nml as nml
 
 # Enter date as YYYY,MM,DD
 #StartDate = dt.date(raw_input("Enter Date YYYY/MM/DD:"))
@@ -45,8 +46,8 @@ class Config:
         # self.dt_end = configDict['end_dates']
         # Don't assume already datetime objects
         print(configDict['start_dates'][0])
-        self.dt_start = configDict['start_dates'][0]
-        self.dt_end = configDict['end_dates'][0]
+        self.dt_start = configDict['start_dates']
+        self.dt_end = configDict['end_dates']
         # self.dt_start = dt.datetime.strptime(configDict['start_dates'][0], '%Y-%m-%d')
         # self.dt_end = dt.datetime.strptime(configDict['end_dates'][0], '%Y-%m-%d')
 
