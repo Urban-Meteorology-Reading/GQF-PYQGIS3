@@ -232,14 +232,21 @@ class Model():
         #         timeBins = bins
         #     else:
         #         timeBins = timeBins.append(bins)
+        try:
+            # offline scenario
+            timeBins = pd.date_range(
+                pd.to_datetime(startDates) + timedelta(seconds=1800),
+                pd.to_datetime(endDates) + timedelta(seconds=1800),
+                tz='UTC',
+                freq='30Min')
+        except:
+            # UMEP scenario
+            timeBins = pd.date_range(
+                startDates[0] + timedelta(seconds=1800),
+                endDates[0] + timedelta(seconds=1800),
+                tz='UTC',
+                freq='30Min')
 
-        timeBins = pd.date_range(
-            pd.to_datetime(startDates) + timedelta(seconds=1800),
-            # pd.datetime.strptime(startDates, '%Y-%m-%d %H:%M') + timedelta(seconds=1800),
-            pd.to_datetime(endDates) + timedelta(seconds=1800),
-            # pd.datetime.strptime(endDates, '%Y-%m-%d %H:%M'),
-            tz='UTC',
-            freq='30Min')
 
         # Make some aliases for the output layer for brevity
         outShp = self.ds.outputAreas_spat['shapefile']
