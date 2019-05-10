@@ -29,8 +29,10 @@ brew tap osgeo/osgeo4mac
 brew install osgeo-qgis
 ```
 
-2. run `QGIS3-Standalone-brew.py`:
+2. run `QGIS3-Standalone-brew.py` with the `homebrew`-ed `python3`:
 ```
 python3 QGIS3-Standalone-brew.py
 ```
 see `QGIS3-Standalone-brew.py` for configuration details.
+
+Please [report your issues](https://github.com/Urban-Meteorology-Reading/GQF-PYQGIS3/issues/new) if any configuration steps missed here.
