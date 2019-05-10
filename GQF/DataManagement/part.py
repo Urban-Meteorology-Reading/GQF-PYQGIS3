@@ -64,10 +64,10 @@ def loadShapeFile(filename, targetEPSG=None):
     layer = QgsVectorLayer(filename, 'Shapefile', 'ogr')
     # layer = QgsVectorLayer(path=filename, baseName='shpfile', providerLib='ogr')
 
-    print(layer)
-    print(layer.crs().authid())
+    # print(layer)
+    # print(layer.crs().authid())
     # print layer.dataProvider().crs().authid().split(':')[1]
-    print('data provider', layer.dataProvider())
+    # print('data provider', layer.dataProvider())
 
     # print layer.dataProvider().crs().authid().split(':')[1]
     if not layer:
