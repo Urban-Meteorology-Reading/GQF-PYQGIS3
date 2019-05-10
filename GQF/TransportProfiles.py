@@ -149,9 +149,10 @@ class TransportProfiles:
 
         for transportType in expectedHeadings:
             # Normalize each week series (over the whole week) so it's a weighting factor
-            dl[transportType][firstDataRow:] = dl[transportType][firstDataRow:].astype('float')/dl[transportType][firstDataRow:].astype('float').mean()
+            # dl.loc[firstDataRow:,transportType] = dl.loc[firstDataRow:,transportType].astype('float')/dl.loc[firstDataRow:,transportType].astype('float').mean()
+            dl.loc[firstDataRow:,transportType] = dl.loc[firstDataRow:,transportType].astype('float')/dl.loc[firstDataRow:,transportType].astype('float').mean()
             # Assign to the relevant element of this object
             subObj = getattr(self, transportType.lower())
             if subObj is None:
                 raise Exception('Programming error: The wrong transport type has been referenced')
-            subObj.addPeriod(startDate=sd, endDate=ed, dataSeries=dl[transportType][firstDataRow:])
+            subObj.addPeriod(startDate=sd, endDate=ed, dataSeries=dl.loc[firstDataRow:,transportType])

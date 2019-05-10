@@ -95,9 +95,11 @@ class DailyEnergyLoading:
         ed = tz.localize(ed)
         # Normalize by annual mean
 
-        for col in dl.columns:
-            dl[col][firstDataLine:] = dl[col][firstDataLine:].astype('float') / dl[col][firstDataLine:].astype('float').mean()
-
+        # for col in dl.columns:
+        #     dl[col][firstDataLine:] = dl[col][firstDataLine:].astype('float') / dl[col][firstDataLine:].astype('float').mean()
+        dl_data = dl.loc[firstDataLine:, :].astype('float').copy()
+        dl_data /= dl_data.mean()
+        dl.loc[firstDataLine:, :] = dl_data.values
         self.gas.addPeriod(startDate=sd, endDate=ed, dataSeries=dl.gas[firstDataLine:])
         self.electricity.addPeriod(startDate=sd, endDate=ed, dataSeries=dl.elec[firstDataLine:])
 

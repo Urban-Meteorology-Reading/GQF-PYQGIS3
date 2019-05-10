@@ -101,7 +101,6 @@ class EnergyUseData:
 
         types = []
         typeLabels = []
-        print('energyType', energyType)
         #self.logger.addEvent('Lookup', requestDate.date(), None, str(typeLabels), 'Requesting energy data from shapefile attributes')
         if 'de' in energyType:
             de = self.domElec.getTableForDate(requestDate)

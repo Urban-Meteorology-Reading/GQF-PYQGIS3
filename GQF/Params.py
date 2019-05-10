@@ -2,7 +2,11 @@
 from datetime import datetime as dt
 from datetime import timedelta as timedelta
 # import f90nml as nml
-from ...Utilities import f90nml as nml
+try:
+    import f90nml as nml
+except:
+    from ...Utilities import f90nml as nml
+
 from .string_func import lower
 import pytz
 

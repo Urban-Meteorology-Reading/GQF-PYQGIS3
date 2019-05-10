@@ -1,7 +1,9 @@
-# import f90nml as nml
-from ...Utilities import f90nml as nml
 import os
 from datetime import datetime as dt
+try:
+    import f90nml as nml
+except:
+    from ...Utilities import f90nml as nml
 try:
     import numpy as np
 except:

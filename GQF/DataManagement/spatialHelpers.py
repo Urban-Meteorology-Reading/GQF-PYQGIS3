@@ -9,7 +9,7 @@ except:
     pass
 from qgis.core import QgsVectorFileWriter, QgsVectorLayer, QgsRasterLayer, QgsGeometry, QgsRaster, QgsRectangle, QgsPoint, QgsField, QgsFeature, QgsSpatialIndex, QgsMessageLog, NULL, QgsCoordinateReferenceSystem, QgsCoordinateTransform
 # from qgis.core import QgsMapLayerRegistry, QgsSymbol, QgsGraduatedSymbolRenderer, QgsRendererRange, QgsFeatureRequest, QgsExpression, QgsDistanceArea
-from qgis.core import QgsSymbol, QgsGraduatedSymbolRenderer, QgsRendererRange, QgsFeatureRequest, QgsExpression, QgsDistanceArea, QgsCoordinateTransformContext, QgsVectorLayerUtils
+from qgis.core import QgsSymbol, QgsGraduatedSymbolRenderer, QgsRendererRange, QgsFeatureRequest, QgsExpression, QgsDistanceArea, QgsCoordinateTransformContext, QgsVectorLayerUtils, QgsProcessingFeedback
 from qgis.analysis import QgsZonalStatistics
 import processing  # qgis processing framework
 # from qgis.PyQt.QtCore import QVariant, QPyNullVariant
@@ -71,14 +71,25 @@ def reprojectVectorLayer(filename, targetEpsgCode):
 
     dest = os.path.join(tempfile.mkdtemp() + 'reprojected.shp')
     # processing.runalg('qgis:reprojectlayer', filename, "EPSG:" + str(targetEpsgCode), dest)
-    processing.run(
-        'qgis:reprojectlayer',
-        {
-            'INPUT': filename,
-            'TARGET_CRS': "EPSG:" + str(targetEpsgCode),
-            'OUTPUT': dest,
-        }
+    try:
+        processing.run(
+            'qgis:reprojectlayer',
+            {
+                'INPUT': filename,
+                'TARGET_CRS': "EPSG:" + str(targetEpsgCode),
+                'OUTPUT': dest,
+            }
         )
+    except:
+        processing.run(
+            'native:reprojectlayer',
+            {
+                'INPUT': filename,
+                'TARGET_CRS': "EPSG:" + str(targetEpsgCode),
+                'OUTPUT': dest,
+            }
+        )
+
     # WORKAROUND FOR QGIS BUG: qgis:reprojectvectorlayer mishandles attributes so that QLongLong data types are
     # treated as int. This means large values have an integer overrun in the reprojected layer
 
@@ -170,7 +181,7 @@ def calculate_fuel_use(inputLayer, inputIdField,
     # Unique road types that are present in shapefile
     # roadTypes = list(set(inputLayer.getValues(roadTypeField)[0]))
     roadTypes = list(
-        set(QgsVectorLayerUtils.getValues(inputLayer,roadTypeField)[0]))
+        set(QgsVectorLayerUtils.getValues(inputLayer, roadTypeField)[0]))
 
     for roadType in roadTypes:  # For each road type in the file
         # If we don't explicitly consider this road type as motorway, A road or B road, just consider it "other"
@@ -187,11 +198,29 @@ def calculate_fuel_use(inputLayer, inputIdField,
         fids = []  # Feature IDs within shapefile
         ids = []  # Feature IDs using desired naming scheme
         lkm = []
+        # # convert multilinestring to linestring for later use
+        # lyr_linstring = processing.runAndLoadResults(
+        #     'qgis:convertgeometrytype',
+        #     {
+        #         'INPUT': inputLayer,
+        #         'TYPE': 2, # line string
+        #         'OUTPUT': 'memory:',
+        #     },
+        #     feedback=QgsProcessingFeedback().reportError('invalid features encountered in `qgis:convertgeometrytype` processing')
+        # )
+        # lyr_linstring = loadShapeFile(lyr_linstring['OUTPUT'])
+        # for f in lyr_linstring.getFeatures(thisRoad):
+        #     fids.append(f.id())
+        #     ids.append(intOrString(f[inputIdField]))
+        #     # Length of segment in km
+        #     lkm.append(in_a.measureLine(f.geometry().asMultiPolyline()[0])/1000.0)
+
         for f in inputLayer.getFeatures(thisRoad):
             fids.append(f.id())
             ids.append(intOrString(f[inputIdField]))
             # Length of segment in km
-            lkm.append(in_a.measureLine(f.geometry().asPolyline())/1000.0)
+            lkm.append(in_a.measureLine(f.geometry().asMultiPolyline()[0])/1000.0)
+
         inputLayer.selectByIds(fids)
         #ids = np.array(ids)
         lkm = pd.Series(index=ids, data=lkm)
@@ -213,7 +242,7 @@ def calculate_fuel_use(inputLayer, inputIdField,
             else:
                 # Scenario 2: Only total AADT is available for each segment.
                 # Break this down into vehicle types using vehicle fractions in parameters file for each segment
-                totalAadtData = np.array(inputLayer.getDoubleValues(
+                totalAadtData = np.array(QgsVectorLayerUtils.getDoubleValues(inputLayer,
                     totalAADTField, selectedOnly=True)[0])
                 aadtData = pd.DataFrame(totalAadtData[:, np.newaxis] *
                                         np.array(
@@ -231,8 +260,10 @@ def calculate_fuel_use(inputLayer, inputIdField,
             # Car and LVG diesel and petrol AADTs available separately when complete data given
             aadtData = pd.DataFrame(columns=completeInputs, index=ids)
             for key in completeInputs:
-                aadtData[key] = np.array(inputLayer.getDoubleValues(vAADTFields[key], selectedOnly=True)[
-                                         0])  # Populate and translate names at the same time
+                aadtData[key] = np.array(
+                    QgsVectorLayerUtils.getDoubleValues(
+                    inputLayer, vAADTFields[key], selectedOnly=True)[0])  # Populate and translate names at the same time
+                # aadtData[key] = np.array(QgsVectorLayerUtils.getDoubleValues(inputLayer,vAADTFields[key], selectedOnly=True)[0])  # Populate and translate names at the same time
 
             # Make use of the extra detail available to us
             newValues[fieldMap['diesel']['car']].loc[ids] = aadtData['diesel_car'] * \
@@ -260,7 +291,7 @@ def calculate_fuel_use(inputLayer, inputIdField,
             # Scenario 3: Vehicle-specific AADT data available in the shapefile, but with no fuel type specifics
             aadtData = pd.DataFrame(columns=modelledTypes, index=ids)
             for key in modelledTypes:
-                aadtData[key] = np.array(inputLayer.getDoubleValues(
+                aadtData[key] = np.array(QgsVectorLayerUtils.getDoubleValues(inputLayer,
                     vAADTFields[key], selectedOnly=True)[0])
             # Populate car, bus and LGV differently to above
             for fuelType in list(fieldMap.keys()):
@@ -337,13 +368,25 @@ def intersecting_amounts(fieldsToSample, inputIndex, inputLayer, new_layer, inpu
         subsumed = {feat[inputLayerIdField]: feat.geometry().intersection(
             bbox).area()/bbox.area() for feat in inputLayer.getFeatures()}
 
+    # # convert multilinestring to linestring for later conversion
+    # lyr_linstring = processing.runAndLoadResults(
+    #     'qgis:convertgeometrytype',
+    #     {
+    #         'INPUT': inputLayer,
+    #         'TYPE': 2,  # line string
+    #         'OUTPUT': 'memory:',
+    #     }
+    # )
+    # lyr_linstring = loadShapeFile(lyr_linstring['OUTPUT'])
+
+
     # Calculate the area or length of all input features (to avoid doing it repetitively later)
     # What type of input features are we dealing with? Support line or polygon
     for inFeat in inputLayer.getFeatures():
         if inFeat.geometry().type() == 1:
             inType = 'Line'
             inputAmounts = {feat[inputLayerIdField]: in_a.measureLine(
-                feat.geometry().asPolyline()) for feat in inputLayer.getFeatures()}
+                feat.geometry().asMultiPolyline()[0]) for feat in inputLayer.getFeatures()}
         elif inFeat.geometry().type() == 2:
             inType = 'Polygon'
             inputAmounts = {feat[inputLayerIdField]: in_a.measureArea(
@@ -352,6 +395,22 @@ def intersecting_amounts(fieldsToSample, inputIndex, inputLayer, new_layer, inpu
             raise ValueError(
                 'Input shapefile must contain either polygons or lines')
         break  # Just look at the first feature and assume the rest are of the same type
+
+    # # convert multilinestring to linestring for later use
+    # if inType == 'Line':
+    #     lyr_linstring = processing.runAndLoadResults(
+    #         'qgis:convertgeometrytype',
+    #         {
+    #             'INPUT': inputLayer,
+    #             'TYPE': 2,  # line string
+    #             'OUTPUT': 'memory:',
+    #         },
+    #         feedback=QgsProcessingFeedback().reportError('invalid features encountered in `qgis:convertgeometrytype` processing')
+    #     )
+    #     lyr_linstring = loadShapeFile(lyr_linstring['OUTPUT'])
+    #     inputLayer_use = lyr_linstring
+    # else:
+    #     inputLayer_use = inputLayer
 
     for outputFeat in new_layer.getFeatures():  # For each output feature
         outGeo = outputFeat.geometry()
@@ -362,8 +421,10 @@ def intersecting_amounts(fieldsToSample, inputIndex, inputLayer, new_layer, inpu
         matching = inputIndex.intersects(outputFeat.geometry().boundingBox())
         matchingInputAmounts = {}
         inputLayer.selectByIds(matching)
+        # inputLayer_use.selectByIds(matching)
         # Input features that intersect the bounding box of the output feature
         selected = inputLayer.selectedFeatures()
+        # selected = inputLayer_use.selectedFeatures()
 
         for featureMatched in selected:
             # Time-saver: If everything is subsumed by the input, skip the following calculations
@@ -373,8 +434,10 @@ def intersecting_amounts(fieldsToSample, inputIndex, inputLayer, new_layer, inpu
             else:
                 # Calculate the amount intersected (metres for lines, square metres for polygons)
                 if inType == 'Line':
-                    amountIntersected = out_a.measureLine(
-                        outGeo.intersection(featureMatched.geometry()).asPolyline())
+                    amountIntersected = outGeo.intersection(
+                        featureMatched.geometry()).length()
+                    # amountIntersected = out_a.measureLine(
+                    #     outGeo.intersection(featureMatched.geometry()).asPolyline())
                 if inType == 'Polygon':
                     amountIntersected = out_a.measureArea(
                         outGeo.intersection(featureMatched.geometry()))
@@ -421,13 +484,25 @@ def intersecting_amounts_LUCY(fieldsToSample, inputLayer, new_layer, inputLayerI
         subsumed = {feat[inputLayerIdField]: feat.geometry().intersection(
             bbox).area()/bbox.area() for feat in inputLayer.getFeatures()}  # Area ratio
 
+    # # convert multilinestring to linestring for later use
+    # lyr_linstring = processing.runAndLoadResults(
+    #     'qgis:convertgeometrytype',
+    #     {
+    #         'INPUT': inputLayer,
+    #         'TYPE': 2,  # line string
+    #         'OUTPUT': 'memory:',
+    #     },
+    #     feedback=QgsProcessingFeedback().reportError('invalid features encountered in `qgis:convertgeometrytype` processing')
+    # )
+    # lyr_linstring = loadShapeFile(lyr_linstring['OUTPUT'])
     # Calculate the area or length of all input features (to avoid doing it repetitively later)
     # What type of input features are we dealing with? Support line or polygon
     for inFeat in inputLayer.getFeatures():
+    # for inFeat in lyr_linstring.getFeatures():
         if inFeat.geometry().type() == 1:
             inType = 'Line'
             inputAmounts = {feat[inputLayerIdField]: in_a.measureLine(
-                feat.geometry().asPolyline()) for feat in inputLayer.getFeatures()}
+                feat.geometry().asMultiPolyline()[0]) for feat in inputLayer.getFeatures()}
         elif inFeat.geometry().type() == 2:
             inType = 'Polygon'
             inputAmounts = {feat[inputLayerIdField]: in_a.measureArea(
@@ -447,7 +522,7 @@ def intersecting_amounts_LUCY(fieldsToSample, inputLayer, new_layer, inputLayerI
         # Generate spatial index of this specific feature and see which input features overlay them
         # This is a workaround as putting the whole world in a spatial index caused QGIS to crash hard
 
-        a.insertFeature(outputFeat)
+        a.addFeature(outputFeat)
         matchingInputIds = []
         for inFeat in inputLayer.getFeatures():
             # IDs of input data features intersected by the output area polygon
@@ -458,8 +533,22 @@ def intersecting_amounts_LUCY(fieldsToSample, inputLayer, new_layer, inputLayerI
         a.deleteFeature(outputFeat)
 
         inputLayer.selectByIds(matchingInputIds)
+
+        # convert multilinestring to linestring for later use
+        lyr_linstring = processing.runAndLoadResults(
+            'qgis:convertgeometrytype',
+            {
+                'INPUT': inputLayer,
+                'TYPE': 2,  # line string
+                'OUTPUT': 'memory:',
+            },
+            feedback=QgsProcessingFeedback().reportError('invalid features encountered in `qgis:convertgeometrytype` processing')
+        )
+        lyr_linstring = loadShapeFile(lyr_linstring['OUTPUT'])
+
         # Input features that intersect the bounding box of the output feature
-        selected = inputLayer.selectedFeatures()
+        selected = lyr_linstring.selectedFeatures()
+        # selected = inputLayer.selectedFeatures()
         matchingInputAmounts = {}
 
         for featureMatched in selected:
@@ -778,7 +867,6 @@ def shapefile_attributes(layer):
                     # vals.append(str(a))
                     vals.append(a)
 
-
                 # try:
                     # vals.append(str(a))
                 # except Exception:
@@ -998,30 +1086,42 @@ def duplicateVectorLayer(inLayer, targetEPSG=None, label=None):
     inLayer.updateExtents()
     inLayer.commitChanges()
 
-    # Create output layer in memory
-    newLayer = QgsVectorLayer("Polygon?crs=EPSG:" +
-                              str(targetEPSG), label, "memory")
-    pr = newLayer.dataProvider()
-    if pr is None:
-        raise Exception('No provider')
+    # # Create output layer in memory
+    # newLayer = QgsVectorLayer("Polygon?crs=EPSG:" +
+    #                           str(targetEPSG), label, "memory")
+    # pr = newLayer.dataProvider()
+    # if pr is None:
+    #     raise Exception('No provider')
 
-    fields = inLayer.fields()
+    # fields = inLayer.fields()
 
-    newLayer.startEditing()
-    pr.addAttributes(fields)
-    newLayer.updateFields()
-    newLayer.updateExtents()
+    # newLayer.startEditing()
+    # pr.addAttributes(fields)
+    # newLayer.updateFields()
+    # newLayer.updateExtents()
 
-    # Copy features
-    for feat in inLayer.getFeatures():
-        a = QgsFeature()
-        a.setGeometry(feat.geometry())
-        a.setFields(newLayer.fields())
-        a.setAttributes(feat.attributes())
-        pr.addFeatures([a])  # Update layer
+    # # Copy features
+    # for feat in inLayer.getFeatures():
+    #     a = QgsFeature()
+    #     a.setGeometry(feat.geometry())
+    #     a.setFields(newLayer.fields())
+    #     a.setAttributes(feat.attributes())
+    #     pr.addFeatures([a])  # Update layer
 
-    newLayer.updateExtents()
-    newLayer.commitChanges()
+    # newLayer.updateExtents()
+    # newLayer.commitChanges()
+
+    # TS added new method for duplicate a layer for QGIS3
+    inLayer.selectAll()
+    newLayer = processing.run(
+        "native:saveselectedfeatures",
+        {
+            'INPUT': inLayer,
+            'OUTPUT': 'memory:',
+        }
+    )['OUTPUT']
+    newLayer.setCrs(crs)
+    # newLayer.setLabel(label)
     return newLayer
 
 

@@ -65,6 +65,8 @@ def QF(areaCodes, timeStepEnd, timeStepDuration, annualEnergyUse, diurnalProfile
     # at later point do something with mods to find total hours in time period
     WattHour = pd.DataFrame(columns=columns, index=areaCodes)
 
+    # TODO: fix the pandas value assignment issues below:
+    # incorrect way of setting values
     WattHour[columns[0]][areaCodes] = prop['domestic']['elec'] * \
         diurnalProfiles.getDomElec(timeStepEnd, timeStepDuration)[0] * \
         dailyEnergy.getElec(timeStepEnd, timeStepDuration)[0] * \
@@ -117,8 +119,7 @@ def QF(areaCodes, timeStepEnd, timeStepDuration, annualEnergyUse, diurnalProfile
     petSc = prop['petrol']
     WattHour[columns[9]][areaCodes] = (petHoc * trans.getMotorcycle(areaCodes, 'petrol', timeStepEnd) * petSc +
                                        dslHoc * trans.getMotorcycle(areaCodes, 'diesel', timeStepEnd) * dslSc) * \
-        diurnalTrans.getMotorcycle(timeStepEnd, timeStepDuration)[
-        0]/86400.0  # motorcycles
+        diurnalTrans.getMotorcycle(timeStepEnd, timeStepDuration)[0]/86400.0  # motorcycles
 
     WattHour[columns[10]][areaCodes] = (petHoc * trans.getTaxi(areaCodes, 'petrol', timeStepEnd) * petSc +
                                         dslHoc * trans.getTaxi(areaCodes, 'diesel', timeStepEnd) * dslSc) * \
@@ -138,13 +139,11 @@ def QF(areaCodes, timeStepEnd, timeStepDuration, annualEnergyUse, diurnalProfile
 
     WattHour[columns[14]][areaCodes] = (petHoc * trans.getRigid(areaCodes, 'petrol', timeStepEnd) * petSc +
                                         dslHoc * trans.getRigid(areaCodes, 'diesel', timeStepEnd) * dslSc) * \
-        diurnalTrans.getRigid(timeStepEnd, timeStepDuration)[
-        0]/86400.0  # Rigid HGVs
+        diurnalTrans.getRigid(timeStepEnd, timeStepDuration)[0]/86400.0  # Rigid HGVs
 
     WattHour[columns[15]][areaCodes] = (petHoc * trans.getArtic(areaCodes, 'petrol', timeStepEnd) * petSc +
                                         dslHoc * trans.getArtic(areaCodes, 'diesel', timeStepEnd) * dslSc) * \
-        diurnalTrans.getArtic(timeStepEnd, timeStepDuration)[
-        0]/86400.0  # Articulated HGVs
+        diurnalTrans.getArtic(timeStepEnd, timeStepDuration)[0]/86400.0  # Articulated HGVs
 
     WattHour[columns[16]] = WattHour[columns[9:16]].sum(
         axis=1)  # Calculate grand total across transport
