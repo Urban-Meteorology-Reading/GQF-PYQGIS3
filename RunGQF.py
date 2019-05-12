@@ -39,11 +39,11 @@ config.loadFromDictionary(b)
 
 model = Model()
 
-# model.setParameters('./GQF_Inputs_1/Parameters.nml')
-model.setParameters('./GQF_Inputs_centralLondon/Parameters.nml')
+# model.setParameters('./GQF_Inputs/1/Parameters.nml')
+model.setParameters('./GQF_Inputs/centralLondon/Parameters.nml')
 
-# model.setDataSources('./GQF_Inputs_1/DataSources.nml')
-model.setDataSources('./GQF_Inputs_centralLondon/DataSources.nml')
+# model.setDataSources('./GQF_Inputs/1/DataSources.nml')
+model.setDataSources('./GQF_Inputs/centralLondon/DataSources.nml')
 
 model.setConfig(config)
 

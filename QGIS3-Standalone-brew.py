@@ -64,11 +64,13 @@ config.loadFromDictionary(b)
 
 model = Model()
 
-# model.setParameters('./GQF_Inputs_1/Parameters.nml')
-model.setParameters('./GQF_Inputs_centralLondon/Parameters.nml')
+# model.setParameters('./GQF_Inputs/1/Parameters.nml')
+# model.setParameters('./GQF_Inputs/centralLondon/Parameters.nml')
+model.setParameters('./GQF_Inputs/smalltestarea/Parameters.nml')
 
-# model.setDataSources('./GQF_Inputs_1/DataSources.nml')
-model.setDataSources('./GQF_Inputs_centralLondon/DataSources.nml')
+# model.setDataSources('./GQF_Inputs/1/DataSources.nml')
+# model.setDataSources('./GQF_Inputs/centralLondon/DataSources.nml')
+model.setDataSources('./GQF_Inputs/smalltestarea/DataSources.nml')
 
 model.setConfig(config)
 
@@ -84,10 +86,9 @@ model.run()
 # finalise QGIS app
 app.exitQgis()
 
-
 print('GQF run finished!')
-
 
 
 # df_res.describe()
 
+# app.exitQgis()
