@@ -75,8 +75,9 @@ def disaggregate(qfDataSources, qfParams, outputFolder):
                                      inputFieldId=ie['featureIds'],
                                      weight_by=workpopattrib,
                                      epsgCode=ie['epsgCode'])
-        (ds, attrib) = bldgEnergy.getIndustrialElecLayer(makeUTC(ie['startDate']))
+        # different for others, next two lines are in other order
         outFile = os.path.join(outputFolder, 'IndElec_starting' + ie['startDate'].strftime('%Y-%m-%d') + '.shp')
+        (ds, attrib) = bldgEnergy.getIndustrialElecLayer(makeUTC(ie['startDate']))
         saveLayerToFile(ds, outFile, bldgEnergy.getOutputLayer().crs(), 'ind elec gas downscaled')
         returnDict['indElec'].append({'file':outFile, 'EPSG':ie['epsgCode'], 'startDate':ie['startDate'], 'attribute':attrib, 'featureIds':outFeatIds})
 

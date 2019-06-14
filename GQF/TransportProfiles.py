@@ -9,6 +9,7 @@ try:
 except:
     pass
 import pytz
+from copy import copy
 from .DataManagement.LookupLogger import LookupLogger
 from .DataManagement.TemporalProfileSampler import TemporalProfileSampler
 
@@ -115,7 +116,7 @@ class TransportProfiles:
         if len(matches) != len(list(dl.keys()))-1:
             raise ValueError('Top row of transport diurnal profiles must contain each of: ' + str(expectedHeadings))
 
-        firstDataRow = 3
+        fDR = 3
         # Expect certain keywords
         if 'transporttype' not in dl.columns.tolist():
             raise ValueError('First column of row 1 must be \'TransportType\' in ' + file)
@@ -149,10 +150,16 @@ class TransportProfiles:
 
         for transportType in expectedHeadings:
             # Normalize each week series (over the whole week) so it's a weighting factor
-            # dl.loc[firstDataRow:,transportType] = dl.loc[firstDataRow:,transportType].astype('float')/dl.loc[firstDataRow:,transportType].astype('float').mean()
-            dl.loc[firstDataRow:,transportType] = dl.loc[firstDataRow:,transportType].astype('float')/dl.loc[firstDataRow:,transportType].astype('float').mean()
+            # Should it not be normalised by dividing by the sum instead of the mean? then sums to 1, instead of around 1
+            # dl.loc[fDR:,transportType] = dl.loc[fDR:,transportType].astype('float')/dl.loc[fDR:,transportType].astype('float').mean()
+            # NOrmalising the transpotr profile between 0 and 1 for each day by dividing by the sum
+            for i in range(int(dl.loc[fDR:, transportType].shape[0] / 48)):
+                dl.loc[fDR+(i*48):fDR+(i+1)*48, transportType] = \
+                    dl.loc[fDR+(i*48):fDR+(i+1)*48, transportType].astype('float') / \
+                    dl.loc[fDR+(i*48):fDR+(i+1)*48, transportType].astype('float').sum()
             # Assign to the relevant element of this object
             subObj = getattr(self, transportType.lower())
             if subObj is None:
                 raise Exception('Programming error: The wrong transport type has been referenced')
-            subObj.addPeriod(startDate=sd, endDate=ed, dataSeries=dl.loc[firstDataRow:,transportType])
+            subObj.addPeriod(startDate=sd, endDate=ed, dataSeries=dl.loc[fDR:,transportType])
+        # dl.to_pickle('logfiles/meanedtransportProfile.pkl')

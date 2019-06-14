@@ -264,6 +264,7 @@ def calculate_fuel_use(inputLayer, inputIdField,
                     QgsVectorLayerUtils.getDoubleValues(
                     inputLayer, vAADTFields[key], selectedOnly=True)[0])  # Populate and translate names at the same time
                 # aadtData[key] = np.array(QgsVectorLayerUtils.getDoubleValues(inputLayer,vAADTFields[key], selectedOnly=True)[0])  # Populate and translate names at the same time
+            # aadtData.to_csv('')
 
             # Make use of the extra detail available to us
             newValues[fieldMap['diesel']['car']].loc[ids] = aadtData['diesel_car'] * \
@@ -312,6 +313,9 @@ def calculate_fuel_use(inputLayer, inputIdField,
             newValues['_FC_Dbus'].loc[ids] = 0
             alreadyCalculated = ['car', 'lgv', 'bus']
 
+        # aadtData.to_pickle(f'/Users/suegrimmond/Documents/IQF/GQF-PYQGIS3/logfiles/small_london/AADT_data_{roadType}.pkl')
+        # lkm.to_pickle(f'/Users/suegrimmond/Documents/IQF/GQF-PYQGIS3/logfiles/small_london/lkm_{roadType}.pkl')
+        # print('AADT and lkm pickled!')
         # The remaining vehicle types all get calculated in the same way so loop over fieldMap to save on code...
         for fuelType in list(fieldMap.keys()):
             for vehType in list(fieldMap[fuelType].keys()):

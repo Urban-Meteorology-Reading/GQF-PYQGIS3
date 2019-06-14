@@ -33,7 +33,7 @@ QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
 # print(QgsApplication.showSettings())
 
 # set path to run GQF
-path_GQF = Path('/Users/sunt05/Dropbox/6.Repos/GQF-PYQGIS3')
+path_GQF = Path('/Users/sunt05/Dropbox/6.Repos/GQF-PYQGIS3')  # /Users/suegrimmond/Documents/IQF/GQF-PYQGIS3
 sys.path.append(path_GQF.as_posix())
 os.chdir(path_GQF)
 print(os.getcwd())

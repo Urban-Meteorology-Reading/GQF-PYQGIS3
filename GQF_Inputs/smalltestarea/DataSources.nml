@@ -145,16 +145,16 @@
 
 &fuelConsumption
     ! File containing fuel consumption performance data for each vehicle type as standards change over the years
-    profileFiles = './GQF_Inputs/smalltestarea/fuelConsumption.csv'
+    profileFiles = './GQF_Inputs_Izzy/fuelConsumption.csv'
 /
 
 ! Temporal transport data
 &diurnalTraffic
     ! Diurnal cycles of transport flow for different vehicle types
-    profileFiles = './GQF_Inputs/smalltestarea/Transport.csv'
+    profileFiles = './GQF_Inputs_Izzy/Transport.csv'
 /
 
 ! Temporal metabolism data
 &diurnalMetabolism
-    profileFiles = './GQF_Inputs/smalltestarea/Metabolism.csv'
+    profileFiles = './GQF_Inputs_Izzy/Metabolism.csv'
 /

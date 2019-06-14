@@ -2,7 +2,7 @@
 import sys
 from pathlib import Path
 # set path to run GQF
-path_GQF = Path('/Users/sunt05/Dropbox/6.Repos/GQF-PYQGIS3')
+path_GQF = Path('/Users/suegrimmond/Documents/IQF/GQF-PYQGIS3')
 sys.path.append(path_GQF.as_posix())
 
 
@@ -32,27 +32,27 @@ b['all_qf'] = 1
 b['sensible_qf'] = 1
 b['latent_qf'] = 1
 b['wastewater_qf'] = 0
-b['start_dates'] = '2015-01-01'
-b['end_dates'] = '2015-01-02'
+b['start_dates'] = '2015-06-18'
+b['end_dates'] = '2015-06-19'
 config.loadFromDictionary(b)
 # config.saveNamelist(f'./SampleRun/history-runs/{rand_file}.nml')
 
 model = Model()
 
 # model.setParameters('./GQF_Inputs/1/Parameters.nml')
-model.setParameters('./GQF_Inputs/centralLondon/Parameters.nml')
+model.setParameters('./GQF_Inputs_Izzy/Parameters.nml')
 
 # model.setDataSources('./GQF_Inputs/1/DataSources.nml')
-model.setDataSources('./GQF_Inputs/centralLondon/DataSources.nml')
+model.setDataSources('./GQF_Inputs_Izzy/DataSources.nml')
 
 model.setConfig(config)
 
 model.setOutputDir(f'./SampleRun/{rand_file}/')
 
 model.processInputData()
+# model.setPreProcessedInputFolder(f'./SampleRun/88WPL5/DownscaledData/')
 model.setPreProcessedInputFolder(f'./SampleRun/{rand_file}/DownscaledData/')
 
+print("I'M HERE!")
 model.run()
-
-
-
+print('FINISHED!')

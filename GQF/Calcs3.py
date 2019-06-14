@@ -117,6 +117,19 @@ def QF(areaCodes, timeStepEnd, timeStepDuration, annualEnergyUse, diurnalProfile
     # Factor of 86400 to convert from J/m2/day to J/m2/s (W/m2)
     dslSc = prop['diesel']
     petSc = prop['petrol']
+    # print('Fuel cons density (kg/m2)', trans.getCar(areaCodes, 'petrol', timeStepEnd))
+    # print('HoC (J km -1)', petHoc)
+    # print('J m-2 day-1', petHoc * trans.getCar(areaCodes, 'petrol', timeStepEnd))
+    # print('J m-2 s-1', (petHoc * trans.getCar(areaCodes, 'petrol', timeStepEnd) /86400))
+    # issue with mean or sum division of transport profile could be coming out here
+    # comes as HoC * profile time * fuel proportion
+    # cardiur = diurnalTrans.getCar(timeStepEnd, timeStepDuration)[0]
+    # print('printing getCar Diurnal', type(cardiur))
+    # print('getCar Diurnal:', cardiur)
+    # print('HoC:', petHoc, dslHoc)
+    # print(areaCodes)
+    # print('FC:', trans.getCar(areaCodes, 'petrol', timeStepEnd))
+    # print('Sc:', petSc, dslSc)
     WattHour.loc[areaCodes,columns[9]] = (petHoc * trans.getMotorcycle(areaCodes, 'petrol', timeStepEnd) * petSc +
                                        dslHoc * trans.getMotorcycle(areaCodes, 'diesel', timeStepEnd) * dslSc) * \
         diurnalTrans.getMotorcycle(timeStepEnd, timeStepDuration)[0]/86400.0  # motorcycles

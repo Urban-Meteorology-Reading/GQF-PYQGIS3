@@ -4,6 +4,7 @@ except:
     pass
 import os
 from .string_func import   lower
+import pickle
 class FuelConsumption():
     def __init__(self, filename):
         ''' Class to read in fuel consumption file with prescribed format in g/km,
@@ -14,6 +15,10 @@ class FuelConsumption():
         self.fuelTypes = ['diesel', 'petrol']
         self.roadTypes = ['motorway', 'rural_single', 'rural_dual', 'urban']
         self.dealWithFile(filename)
+        fuel_vehs = ['dieselcar', 'petrolcar', 'dieseltaxi', 'petroltaxi', 'dieselbus', 'petrolbus',
+                     'diesellgv', 'petrollgv', 'dieselartic', 'petrolartic', 'dieselrigid', 'petrolrigid',
+                     'dieselmotorcycle', 'petrolmotorcycle']
+        self.FC_record = {m: [] for m in fuel_vehs}
 
     def dealWithFile(self, filename):
         '''
@@ -82,5 +87,12 @@ class FuelConsumption():
         timePick = self.data.index.levels[0].asof(date)
 
         tidx = self.data.index.levels[0].asof(timePick)
+
+        fc_val = self.data.loc[tidx].loc[self.fuelMatch[fuel]].loc[self.vehicleMatch[vehicle]][self.roadMatch[road]]/1000.0
+        self.FC_record[fuel+vehicle].append(fc_val)
+        # pickle.dump(self.FC_record, open('/Users/suegrimmond/Documents/IQF/GQF-PYQGIS3/logfiles/FC_GQF.pkl', 'wb'))
+        # f_c_pkl.to_pickle(f'/Users/suegrimmond/Documents/IQF/GQF-PYQGIS3/logfiles/FC_{road}_{fuel}_{vehicle}.pkl')
+        # print('Saved FC pkl')
+        # print(self.data.loc[tidx].loc[self.fuelMatch[fuel]].loc[self.vehicleMatch[vehicle]][self.roadMatch[road]]/1000.0)
         return self.data.loc[tidx].loc[self.fuelMatch[fuel]].loc[self.vehicleMatch[vehicle]][self.roadMatch[road]]/1000.0 # Convert to kg/km
 

@@ -269,7 +269,7 @@ class Model():
         [diurnalE.addIndElec(ie['profileFile']) for ie in self.ds.diurnIndElec]
         [diurnalE.addIndGas(ig['profileFile']) for ig in self.ds.diurnIndGas]
 
-        # Diurnal traffic patterns
+        # Diurnal traffic patterns %%% for whole run as one var?
         diurnalT = TransportProfiles(
             self.parameters.city, use_uk_holidays=self.parameters.useUKholidays, customHolidays=self.parameters.customHolidays)
         [diurnalT.addProfiles(tr['profileFile'])
