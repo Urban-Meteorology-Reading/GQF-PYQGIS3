@@ -66,11 +66,13 @@ model = Model()
 
 # model.setParameters('./GQF_Inputs/1/Parameters.nml')
 # model.setParameters('./GQF_Inputs/centralLondon/Parameters.nml')
-model.setParameters('./GQF_Inputs/smalltestarea/Parameters.nml')
+# model.setParameters('./GQF_Inputs/smalltestarea/Parameters.nml')
+model.setParameters('./GQF_Inputs/Izzy/Parameters.nml')
 
 # model.setDataSources('./GQF_Inputs/1/DataSources.nml')
 # model.setDataSources('./GQF_Inputs/centralLondon/DataSources.nml')
-model.setDataSources('./GQF_Inputs/smalltestarea/DataSources.nml')
+# model.setDataSources('./GQF_Inputs/smalltestarea/DataSources.nml')
+model.setDataSources('./GQF_Inputs/Izzy/DataSources.nml')
 
 model.setConfig(config)
 
